@@ -1,18 +1,62 @@
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'leafeat',          # seu banco criado
-        'USER': 'postgres',      # usuário do PostgreSQL
-        'PASSWORD': '@Pgpghx63p',    # senha do PostgreSQL
-        'HOST': 'localhost',
-        'PORT': '5432',
-    }
-}
+import os
+from pathlib import Path
+
+# =========================
+# BASE DO PROJETO
+# =========================
+BASE_DIR = Path(__file__).resolve().parent.parent
+
+# =========================
+# SEGURANÇA
+# =========================
+SECRET_KEY = os.getenv('DJANGO_SECRET_KEY', 'sua_chave_secreta_local')
+DEBUG = os.getenv('DJANGO_DEBUG', 'True') == 'True'
+
+ALLOWED_HOSTS = ['*']  # para produção, coloque seu domínio aqui
+
+# =========================
+# APPS INSTALADOS
+# =========================
+INSTALLED_APPS = [
+    'corsheaders',  # CORS
+    'django.contrib.admin',
+    'django.contrib.auth',
+    'django.contrib.contenttypes',
+    'django.contrib.sessions',
+    'django.contrib.messages',
+    'django.contrib.staticfiles',
+
+    # REST
+    'rest_framework',
+
+    # Apps do projeto
+    'usuarios',
+    'restaurantes',
+]
+
+# =========================
+# MIDDLEWARE
+# =========================
+MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',  # sempre primeiro
+    'django.middleware.security.SecurityMiddleware',
+    'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.common.CommonMiddleware',
+    'django.middleware.csrf.CsrfViewMiddleware',
+    'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'django.contrib.messages.middleware.MessageMiddleware',
+    'django.middleware.clickjacking.XFrameOptionsMiddleware',
+]
+
+# =========================
+# URLS & TEMPLATES
+# =========================
+ROOT_URLCONF = 'leafeat_backend.urls'
 
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],  # aqui você pode colocar caminhos para seus templates personalizados
+        'DIRS': [],  # se tiver templates próprios, coloque aqui
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -25,63 +69,76 @@ TEMPLATES = [
     },
 ]
 
-INSTALLED_APPS = [
-    'corsheaders', 
-    'django.contrib.admin',
-    'django.contrib.auth',
-    'django.contrib.contenttypes',
-    'django.contrib.sessions',
-    'django.contrib.messages',
-    'django.contrib.staticfiles',
-    'rest_framework',
-    'usuarios',
-    'restaurantes',
-]
+WSGI_APPLICATION = 'leafeat_backend.wsgi.application'
 
-MIDDLEWARE = [
-    'corsheaders.middleware.CorsMiddleware', # Para permitir CORS
-    'django.middleware.security.SecurityMiddleware',
-    'django.contrib.sessions.middleware.SessionMiddleware',
-    'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
-    'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'django.contrib.messages.middleware.MessageMiddleware',
-    'django.middleware.clickjacking.XFrameOptionsMiddleware',
-]
+# =========================
+# BANCO DE DADOS
+# =========================
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': os.getenv('POSTGRES_DB', 'leafeat'),
+        'USER': os.getenv('POSTGRES_USER', 'postgres'),
+        'PASSWORD': os.getenv('POSTGRES_PASSWORD', '@Pgpghx63p'),
+        'HOST': os.getenv('POSTGRES_HOST', 'localhost'),
+        'PORT': os.getenv('POSTGRES_PORT', '5432'),
+    }
+}
 
-CORS_ALLOWED_ORIGINS = [
-    "http://localhost:5173",  # Vue
-    "http://127.0.0.1:5173",
-]
-
-AUTH_USER_MODEL = 'usuarios.Usuario'
-# Configuração do modelo de usuário personalizado
-
-DEBUG = True
-
-ALLOWED_HOSTS = ['*']
-
-# Caminho base do projeto
-import os
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-
-# URL para arquivos estáticos
-STATIC_URL = '/static/'
-
-# Opcional: pasta onde os arquivos estáticos serão coletados
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
-
-# Pasta extra para arquivos estáticos do projeto
-STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'static'),
-]
-CORS_ALLOW_ALL_ORIGINS = True
-# INSTALLED_APPS += ['rest_framework']
-ROOT_URLCONF = 'leafeat_backend.urls'
-
-SECRET_KEY = 'kb1jc@8l183d7cezs26(db!4usxiz5l66&4+r0c53)7d*6@3c!'
-
+# =========================
+# AUTENTICAÇÃO
+# =========================
+AUTH_USER_MODEL = 'usuarios.Usuario'  # modelo de usuário customizado
 AUTHENTICATION_BACKENDS = [
-    'usuarios.auth_backends.EmailAuthBackend',
+    'usuarios.auth_backends.EmailAuthBackend',  # login por email
     'django.contrib.auth.backends.ModelBackend',
 ]
+
+# =========================
+# CORS
+# =========================
+CORS_ALLOW_ALL_ORIGINS = True  # permite todas as origens (localhost e deploy)
+# ou, para produção:
+# CORS_ALLOWED_ORIGINS = ["https://seu-dominio.com"]
+
+# =========================
+# PASSWORD VALIDATION
+# =========================
+AUTH_PASSWORD_VALIDATORS = [
+    {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator'},
+    {'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator'},
+    {'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator'},
+    {'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator'},
+]
+
+# =========================
+# INTERNACIONALIZAÇÃO
+# =========================
+LANGUAGE_CODE = 'pt-br'
+TIME_ZONE = 'America/Fortaleza'
+USE_I18N = True
+USE_TZ = True
+
+# =========================
+# STATIC FILES
+# =========================
+STATIC_URL = '/static/'
+STATIC_ROOT = BASE_DIR / 'staticfiles'  # para deploy
+STATICFILES_DIRS = [BASE_DIR / 'static']  # pasta local
+
+# =========================
+# REST FRAMEWORK
+# =========================
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ),
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.AllowAny',
+    ),
+}
+
+# =========================
+# PADRÕES DE AUTO FIELD
+# =========================
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'

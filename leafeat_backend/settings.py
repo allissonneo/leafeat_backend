@@ -117,6 +117,8 @@ if not settings.DEBUG:
     CORS_ALLOWED_ORIGIN_REGEXES = [
         r"^https://leaf-eat\.vercel\.app/?$",
     ]
+    
+CORS_ALLOW_ALL_ORIGINS = True
 
 SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 # =========================

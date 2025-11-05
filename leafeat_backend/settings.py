@@ -1,6 +1,8 @@
 import os
 from pathlib import Path
 
+from django.conf import settings
+
 # =========================
 # BASE DO PROJETO
 # =========================
@@ -109,6 +111,11 @@ if DEBUG:
 else:
     CORS_ALLOWED_ORIGINS = [
         "https://leaf-eat.vercel.app",
+    ]
+
+if not settings.DEBUG:
+    CORS_ALLOWED_ORIGIN_REGEXES = [
+        r"^https://leaf-eat\.vercel\.app/?$",
     ]
 
 # =========================

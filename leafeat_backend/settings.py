@@ -14,7 +14,7 @@ DEBUG = os.getenv('DJANGO_DEBUG', 'True') == 'True'
 
 ALLOWED_HOSTS = [
     "leafeat-backend-1.onrender.com",  # URL do seu backend
-    "localhost",                        # se for testar localmente
+    "http://localhost:5173",                    # se for testar localmente
     "127.0.0.1",                        # também para testes locais
 ] # para produção, coloque seu domínio aqui
 

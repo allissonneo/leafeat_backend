@@ -109,8 +109,8 @@ if DEBUG:
         "http://127.0.0.1:5173",
     ]
 else:
-    CORS_ALLOWED_ORIGINS = [
-        "https://leaf-eat.vercel.app",
+    CORS_ALLOWED_ORIGIN_REGEXES = [
+        r"^https://leaf-eat\.vercel\.app$",
     ]
 
 if not settings.DEBUG:
@@ -118,6 +118,7 @@ if not settings.DEBUG:
         r"^https://leaf-eat\.vercel\.app/?$",
     ]
 
+SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 # =========================
 # VALIDADORES DE SENHA
 # =========================

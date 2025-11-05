@@ -13,10 +13,10 @@ SECRET_KEY = os.getenv('DJANGO_SECRET_KEY', 'sua_chave_secreta_local')
 DEBUG = os.getenv('DJANGO_DEBUG', 'True') == 'True'
 
 ALLOWED_HOSTS = [
-    "leafeat-backend-1.onrender.com",  # URL do seu backend
-    "http://localhost:5173",                    # se for testar localmente
-    "127.0.0.1",                        # também para testes locais
-] # para produção, coloque seu domínio aqui
+    "127.0.0.1",
+    "localhost",
+    "leafeat-backend-1.onrender.com",  # produção
+]
 
 # =========================
 # APPS INSTALADOS
@@ -60,7 +60,7 @@ ROOT_URLCONF = 'leafeat_backend.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],  # se tiver templates próprios, coloque aqui
+        'DIRS': [],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -92,21 +92,27 @@ DATABASES = {
 # =========================
 # AUTENTICAÇÃO
 # =========================
-AUTH_USER_MODEL = 'usuarios.Usuario'  # modelo de usuário customizado
+AUTH_USER_MODEL = 'usuarios.Usuario'
 AUTHENTICATION_BACKENDS = [
-    'usuarios.auth_backends.EmailAuthBackend',  # login por email
+    'usuarios.auth_backends.EmailAuthBackend',
     'django.contrib.auth.backends.ModelBackend',
 ]
 
 # =========================
 # CORS
 # =========================
-# CORS_ALLOW_ALL_ORIGINS = True  # permite todas as origens (localhost e deploy)
-# ou, para produção:
-CORS_ALLOWED_ORIGINS = ["https://leaf-eat.vercel.app/"]
+if DEBUG:
+    CORS_ALLOWED_ORIGINS = [
+        "http://localhost:5173",
+        "http://127.0.0.1:5173",
+    ]
+else:
+    CORS_ALLOWED_ORIGINS = [
+        "https://leaf-eat.vercel.app",
+    ]
 
 # =========================
-# PASSWORD VALIDATION
+# VALIDADORES DE SENHA
 # =========================
 AUTH_PASSWORD_VALIDATORS = [
     {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator'},
@@ -143,6 +149,6 @@ REST_FRAMEWORK = {
 }
 
 # =========================
-# PADRÕES DE AUTO FIELD
+# AUTO FIELD
 # =========================
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'

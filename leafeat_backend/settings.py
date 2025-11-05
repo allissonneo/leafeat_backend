@@ -97,9 +97,9 @@ AUTHENTICATION_BACKENDS = [
 # =========================
 # CORS
 # =========================
-CORS_ALLOW_ALL_ORIGINS = True  # permite todas as origens (localhost e deploy)
+# CORS_ALLOW_ALL_ORIGINS = True  # permite todas as origens (localhost e deploy)
 # ou, para produção:
-# CORS_ALLOWED_ORIGINS = ["https://seu-dominio.com"]
+CORS_ALLOWED_ORIGINS = ["https://leaf-eat.vercel.app/"]
 
 # =========================
 # PASSWORD VALIDATION

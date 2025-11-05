@@ -12,7 +12,11 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.getenv('DJANGO_SECRET_KEY', 'sua_chave_secreta_local')
 DEBUG = os.getenv('DJANGO_DEBUG', 'True') == 'True'
 
-ALLOWED_HOSTS = ['*']  # para produção, coloque seu domínio aqui
+ALLOWED_HOSTS = [
+    "leafeat-backend-1.onrender.com",  # URL do seu backend
+    "localhost",                        # se for testar localmente
+    "127.0.0.1",                        # também para testes locais
+] # para produção, coloque seu domínio aqui
 
 # =========================
 # APPS INSTALADOS
